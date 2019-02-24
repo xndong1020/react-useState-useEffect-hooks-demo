@@ -1,52 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react'
 
-import CharPicker from './components/CharPicker';
-import Character from './components/Character';
+import CharPicker from './components/CharPicker'
+import Character from './components/Character'
 
-class App extends Component {
-  state = {
-    selectedCharacter: 1,
-    side: 'light',
-    destroyed: false
-  };
+const App = props => {
+  /* 
+    useState() always returns a array which contains 2 variables, we can use array-destructuring to get them.
+    The first variable we got is the state, at the beginning it is the initial state we passed into useState() function
+    The second variable is a setter function which responsible for updating the state
+  */
+  const [side, setSide] = useState('light')
+  const [selectedCharacter, setSelectedCharacter] = useState(1)
+  const [destroyed, setDestroyed] = useState(false)
 
-  sideHandler = side => {
-    this.setState({ side: side });
-  };
-
-  charSelectHandler = event => {
-    const charId = event.target.value;
-    this.setState({ selectedCharacter: charId });
-  };
-
-  destructionHandler = () => {
-    this.setState({ destroyed: true });
-  };
-
-  render() {
-    let content = (
-      <React.Fragment>
-        <CharPicker
-          side={this.state.side}
-          selectedChar={this.state.selectedCharacter}
-          onCharSelect={this.charSelectHandler}
-        />
-        <Character selectedChar={this.state.selectedCharacter} />
-        <button onClick={this.sideHandler.bind(this, 'light')}>
-          Light Side
-        </button>
-        <button onClick={this.sideHandler.bind(this, 'dark')}>Dark Side</button>
-        {this.state.side === 'dark' && (
-          <button onClick={this.destructionHandler}>DESTROY!</button>
-        )}
-      </React.Fragment>
-    );
-
-    if (this.state.destroyed) {
-      content = <h1>Total destruction!</h1>;
-    }
-    return content;
+  const sideHandler = side => {
+    setSide(side)
   }
+
+  const charSelectHandler = event => {
+    const charId = event.target.value
+    setSelectedCharacter(charId)
+  }
+
+  const destructionHandler = () => {
+    setDestroyed(true)
+  }
+
+  let content = (
+    <React.Fragment>
+      <CharPicker
+        side={side}
+        selectedChar={selectedCharacter}
+        onCharSelect={charSelectHandler}
+      />
+      <Character selectedChar={selectedCharacter} />
+      <button onClick={() => sideHandler('light')}>Light Side</button>
+      <button onClick={() => sideHandler('dark')}>Dark Side</button>
+      {side === 'dark' && (
+        <button onClick={destructionHandler}>DESTROY!</button>
+      )}
+    </React.Fragment>
+  )
+
+  if (destroyed) {
+    content = <h1>Total destruction!</h1>
+  }
+  return content
 }
 
-export default App;
+export default App
